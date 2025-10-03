@@ -33,5 +33,11 @@ list() {
 	done
 }
 
-printf "${ctitle}Secrets${creset}\n"
-list "$dir" ""
+case "$1" in
+list)
+	printf "${ctitle}Secrets${creset}\n"
+	list "$dir" ""
+	;;
+*)
+	usage
+esac
