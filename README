@@ -3,6 +3,8 @@ unveil
 
 Program written in POSIX shell to store and decrypt secrets.
 
+It uses Sequoia SQ as its backend.
+
 Installation
 ------------
 
