@@ -17,9 +17,10 @@ usage() {
 	die "Usage: $0 list"
 }
 
-# List files in $1 in a formatted format using $2 as the prefix of each printed
-# line, recursing directories and appending to $2 for each cycle to create an
-# indentation effect. If present, the ".enc" prefix is removed from file names.
+# List files ending in ".enc" in $1 in a formatted format using $2 as the
+# prefix of each printed line, recursing directories and appending to $2 for
+# each cycle to create an indentation effect. The ".enc" prefix is removed from
+# file names.
 list() {
 	for f in "$1"/*; do
 		b=$(basename "$f")
@@ -28,7 +29,11 @@ list() {
 			printf    "$2|- ${cdir}$b${creset}\n"
 			list "$f" "$2|  "
 		elif [ -f "$f" ]; then
-			printf    "$2|- ${b%.enc}\n"
+			case "$b" in
+			*.enc)
+				printf    "$2|- ${b%.enc}\n"
+				;;
+			esac
 		fi
 	done
 }
