@@ -1,6 +1,6 @@
 #!/bin/sh
 
-dir=${PASSWORDS:="$HOME/passwords"}
+dir=${SECRETS:="$HOME/secrets"}
 
 creset='\033[0m'
 cdir='\033[1;36m'
@@ -22,5 +22,5 @@ list() {
 	done
 }
 
-printf "${ctitle}Passwords${creset}\n"
+printf "${ctitle}Secrets${creset}\n"
 list "$dir" ""
