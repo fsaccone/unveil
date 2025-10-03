@@ -14,4 +14,5 @@ Usage
 The SECRETS environment variable is used to locate the directory containing the
 encrypted secrets. It defaults to "$HOME/secrets".
 
-	unveil
+	Usage: unveil -g secret
+	       unveil -l
