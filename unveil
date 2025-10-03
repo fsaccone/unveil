@@ -7,18 +7,6 @@ creset='\033[0m'
 cdir='\033[1;36m'
 ctitle='\033[1m'
 
-# Prints $1 to stderr.
-stderr() {
-	echo "$1" >&2
-}
-
-# Dies printing usage.
-usage() {
-	stderr "Usage: $0 get <secret>"
-	stderr "Usage: $0 ls"
-	exit 1
-}
-
 # List files ending in ".enc" in $1 in a formatted format using $2 as the
 # prefix of each printed line, recursing directories and appending to $2 for
 # each cycle to create an indentation effect. The ".enc" prefix is removed from
@@ -38,6 +26,18 @@ list() {
 			esac
 		fi
 	done
+}
+
+# Prints $1 to stderr.
+stderr() {
+	echo "$1" >&2
+}
+
+# Dies printing usage.
+usage() {
+	stderr "Usage: $0 get <secret>"
+	stderr "Usage: $0 ls"
+	exit 1
 }
 
 case "$1" in
