@@ -1,7 +1,6 @@
 #!/bin/sh
 
 dir=${SECRETS:="$HOME/secrets"}
-fingerprint=${PGPFINGERPRINT:=""}
 
 creset='\033[0m'
 cdir='\033[1;36m'
@@ -59,11 +58,6 @@ case "$1" in
 get)
 	if [ -z "$2" ]; then
 		usage
-	fi
-
-	if [ -z "$fingerprint" ]; then
-		stderr 'Environment variable PGPFINGERPRINT is not defined.'
-		exit 1
 	fi
 
 	decrypt "$2"
