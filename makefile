@@ -1,6 +1,6 @@
 include config.mk
 
-OUT = pass
+OUT = unveil
 
 .PHONY: install uninstall
 

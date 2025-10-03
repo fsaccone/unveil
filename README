@@ -1,5 +1,5 @@
-pass
-====
+unveil
+======
 
 A program written in POSIX shell to store and decrypt secrets.
 
@@ -14,4 +14,4 @@ Usage
 The SECRETS environment variable is used to locate the directory containing the
 encrypted secrets. It defaults to "$HOME/secrets".
 
-	pass
+	unveil
