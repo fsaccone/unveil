@@ -14,10 +14,10 @@ list() {
 		b=$(basename "$f")
 
 		if [ -d "$f" ]; then
-			printf    "$2├── ${cdir}$b${creset}\n"
-			list "$f" "$2│   "
+			printf    "$2|- ${cdir}$b${creset}\n"
+			list "$f" "$2|  "
 		elif [ -f "$f" ]; then
-			printf    "$2├── ${b%.enc}\n"
+			printf    "$2|- ${b%.enc}\n"
 		fi
 	done
 }
