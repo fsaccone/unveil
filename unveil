@@ -2,6 +2,8 @@
 
 dir=${SECRETS:="$HOME/secrets"}
 
+programname="unveil"
+
 creset='\033[0m'
 cdir='\033[1;36m'
 ctitle='\033[1m'
@@ -49,8 +51,8 @@ stderr() {
 
 # Dies printing usage.
 usage() {
-	stderr "Usage: $0 get <secret>"
-	stderr "Usage: $0 ls"
+	stderr "Usage: $programname get <secret>"
+	stderr "Usage: $programname ls"
 	exit 1
 }
 
