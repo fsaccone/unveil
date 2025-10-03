@@ -7,6 +7,21 @@ creset='\033[0m'
 cdir='\033[1;36m'
 ctitle='\033[1m'
 
+# Decrypt PGP encrypted file $dir/$1.enc and prints the plain text to stdout.
+# Exits with return code 1 if the file does not exist or with 2 if decryption
+# fails.
+decrypt() {
+	if [ ! -f "$dir/$1.enc" ]; then
+		stderr "Secret $1 does not exist."
+		exit 1
+	fi
+
+	if ! sq decrypt -q "$dir/$1.enc" 2> /dev/null; then
+		stderr "Failed to decrypt $1."
+		exit 1
+	fi
+}
+
 # List files ending in ".enc" in $1 in a formatted format using $2 as the
 # prefix of each printed line, recursing directories and appending to $2 for
 # each cycle to create an indentation effect. The ".enc" prefix is removed from
@@ -50,6 +65,8 @@ get)
 		stderr 'Environment variable PGPFINGERPRINT is not defined.'
 		exit 1
 	fi
+
+	decrypt "$2"
 	;;
 ls)
 	printf "${ctitle}Secrets${creset}\n"
