@@ -30,7 +30,7 @@ decrypt() {
 # password.enc or otp.enc, along with the flags of what .enc file is available
 # (u, p, o).
 list() {
-	for f in "$1"/*; do
+	for f in "$dir"/*; do
 		b=$(basename "$f")
 		hasu=0
 		hasp=0
@@ -65,7 +65,7 @@ list() {
 			continue
 		fi
 
-		printf "$2|- ${cdir}$b${creset} $flags\n"
+		printf "- ${cdir}$b${creset} $flags\n"
 	done
 }
 
@@ -122,6 +122,5 @@ elif [ $pflag -eq 1 ]; then
 elif [ $oflag -eq 1 ]; then
 	decrypt "$secret/otp.enc"
 else
-	printf "${ctitle}Secrets${creset}\n"
-	list "$dir" ""
+	list
 fi
