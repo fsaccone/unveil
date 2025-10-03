@@ -14,7 +14,7 @@ die() {
 
 # Dies printing usage.
 usage() {
-	die "Usage: $0 list"
+	die "Usage: $0 ls"
 }
 
 # List files ending in ".enc" in $1 in a formatted format using $2 as the
@@ -39,7 +39,7 @@ list() {
 }
 
 case "$1" in
-list)
+ls)
 	printf "${ctitle}Secrets${creset}\n"
 	list "$dir" ""
 	;;
