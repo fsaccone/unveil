@@ -1,0 +1,17 @@
+pass
+====
+
+A program written in POSIX shell to store and decrypt passwords.
+
+Installation
+------------
+
+	# make install
+
+Usage
+-----
+
+The PASSWORDS environment variable is used to locate the directory containing
+the encrypted passwords. It defaults to "$HOME/passwords".
+
+	pass
