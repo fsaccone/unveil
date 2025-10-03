@@ -32,12 +32,12 @@ list() {
 		b=$(basename "$f")
 
 		if [ -d "$f" ]; then
-			printf    "$2|- ${cdir}$b${creset}\n"
+			printf "$2|- ${cdir}$b${creset}\n"
 			list "$f" "$2|  "
 		elif [ -f "$f" ]; then
 			case "$b" in
 			*.enc)
-				printf    "$2|- ${b%.enc}\n"
+				printf "$2|- ${b%.enc}\n"
 				;;
 			esac
 		fi
