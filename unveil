@@ -7,15 +7,15 @@ creset='\033[0m'
 cdir='\033[1;36m'
 ctitle='\033[1m'
 
-# Prints $1 to stderr and exits with return code 1.
-die() {
+# Prints $1 to stderr.
+stderr() {
 	echo "$1" >&2
-	exit 1
 }
 
 # Dies printing usage.
 usage() {
-	die "Usage: $0 get|ls"
+	stderr "Usage: $0 get|ls"
+	exit 1
 }
 
 # List files ending in ".enc" in $1 in a formatted format using $2 as the
@@ -42,7 +42,8 @@ list() {
 case "$1" in
 get)
 	if [ -z "$fingerprint" ]; then
-		die 'Environment variable PGPFINGERPRINT is not defined.'
+		stderr 'Environment variable PGPFINGERPRINT is not defined.'
+		exit 1
 	fi
 	;;
 ls)
