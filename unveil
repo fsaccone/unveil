@@ -4,43 +4,69 @@ dir=${SECRETS:="$HOME/secrets"}
 
 programname="unveil"
 
+uflag=0
+pflag=0
+oflag=0
+secret=""
+
 creset='\033[0m'
 cdir='\033[1;36m'
 ctitle='\033[1m'
 
-# Decrypt PGP encrypted file $dir/$1.enc and prints the plain text to stdout.
-# Exits with return code 1 if the file does not exist or with 2 if decryption
-# fails.
+# Decrypt PGP encrypted file $dir/$1 and prints the plain text to stdout.
 decrypt() {
-	if [ ! -f "$dir/$1.enc" ]; then
+	if [ ! -f "$dir/$1" ]; then
 		stderr "Secret $1 does not exist."
 		exit 1
 	fi
 
-	if ! sq decrypt -q "$dir/$1.enc" 2> /dev/null; then
+	if ! sq decrypt -q "$dir/$1" 2> /dev/null; then
 		stderr "Failed to decrypt $1."
 		exit 1
 	fi
 }
 
-# List files ending in ".enc" in $1 in a formatted format using $2 as the
-# prefix of each printed line, recursing directories and appending to $2 for
-# each cycle to create an indentation effect. The ".enc" prefix is removed from
-# file names.
+# List directories in $dir which contain at least one of username.enc,
+# password.enc or otp.enc, along with the flags of what .enc file is available
+# (u, p, o).
 list() {
 	for f in "$1"/*; do
 		b=$(basename "$f")
+		hasu=0
+		hasp=0
+		haso=0
 
-		if [ -d "$f" ]; then
-			printf "$2|- ${cdir}$b${creset}\n"
-			list "$f" "$2|  "
-		elif [ -f "$f" ]; then
-			case "$b" in
-			*.enc)
-				printf "$2|- ${b%.enc}\n"
-				;;
-			esac
+		if [ ! -d "$f" ]; then
+			continue
 		fi
+
+		flags="("
+
+		if [ -f "$f/username.enc" ]; then
+			flags="${flags}u"
+			hasu=1
+		fi
+
+		if [ -f "$f/password.enc" ]; then
+			flags="${flags}p"
+			hasp=1
+		fi
+
+		if [ -f "$f/otp.enc" ]; then
+			flags="${flags}o"
+			haso=1
+		fi
+
+		flags="${flags})"
+
+		if [ $hasu -eq 0 ] \
+		&& [ $hasp -eq 0 ] \
+		&& [ $haso -eq 0 ]; then
+			continue
+		fi
+
+		printf "$2|- ${cdir}$b${creset} $flags\n"
+		list "$f" "$2|  "
 	done
 }
 
@@ -51,14 +77,51 @@ stderr() {
 
 # Dies printing usage.
 usage() {
-	stderr "Usage: $programname [secret]"
+	stderr "Usage: $programname [-u secret | -p secret | -o secret]"
 	exit 1
 }
 
-if [ $# -gt 1 ]; then
+while getopts "u:p:o:" o; do
+	case $o in
+	u)
+		uflag=1
+		secret="$OPTARG"
+		;;
+	p)
+		pflag=1
+		secret="$OPTARG"
+		;;
+	o)
+		oflag=1
+		secret="$OPTARG"
+		;;
+	*)
+		usage
+	esac
+done
+
+shift $((OPTIND - 1))
+
+# Only allow one of -u, -p and -o.
+if   [ $uflag -eq 1 ] && [ $pflag -eq 1 ]; then
 	usage
-elif [ $# -eq 1 ]; then
-	decrypt "$1"
+elif [ $uflag -eq 1 ] && [ $oflag -eq 1 ]; then
+	usage
+elif [ $pflag -eq 1 ] && [ $oflag -eq 1 ]; then
+	usage
+fi
+
+# Disallow arguments.
+if [ $# -ne 0 ]; then
+	usage
+fi
+
+if   [ $uflag -eq 1 ]; then
+	decrypt "$secret/username.enc"
+elif [ $pflag -eq 1 ]; then
+	decrypt "$secret/password.enc"
+elif [ $oflag -eq 1 ]; then
+	decrypt "$secret/otp.enc"
 else
 	printf "${ctitle}Secrets${creset}\n"
 	list "$dir" ""
