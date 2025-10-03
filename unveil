@@ -4,6 +4,10 @@ dir=${SECRETS:="$HOME/secrets"}
 
 programname="unveil"
 
+gflag=0
+garg=""
+lflag=0
+
 creset='\033[0m'
 cdir='\033[1;36m'
 ctitle='\033[1m'
@@ -51,24 +55,43 @@ stderr() {
 
 # Dies printing usage.
 usage() {
-	stderr "Usage: $programname get <secret>"
-	stderr "Usage: $programname ls"
+	stderr "Usage: $programname -g secret"
+	stderr "       $programname -l"
 	exit 1
 }
 
-case "$1" in
-get)
-	if [ -z "$2" ]; then
+while getopts "g:l" o; do
+	case $o in
+	g)
+		gflag=1
+		garg="$OPTARG"
+		;;
+	l)
+		lflag=1
+		;;
+	*)
 		usage
-	fi
+		;;
+	esac
+done
 
-	decrypt "$2"
-	;;
-ls)
+shift $((OPTIND - 1))
+
+if [ $gflag -eq 1 ] && [ $lflag -eq 1 ]; then
+	usage
+fi
+
+if [ $gflag -eq 1 ]; then
+	decrypt "$garg"
+
+	exit 0
+fi
+
+if [ $lflag -eq 1 ]; then
 	printf "${ctitle}Secrets${creset}\n"
 	list "$dir" ""
-	;;
-*)
-	usage
-	;;
-esac
+
+	exit 0
+fi
+
+usage
