@@ -1,7 +1,7 @@
 unveil
 ======
 
-A program written in POSIX shell to store and decrypt secrets.
+Program written in POSIX shell to store and decrypt secrets.
 
 Installation
 ------------
