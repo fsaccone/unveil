@@ -14,7 +14,8 @@ stderr() {
 
 # Dies printing usage.
 usage() {
-	stderr "Usage: $0 get|ls"
+	stderr "Usage: $0 get <secret>"
+	stderr "Usage: $0 ls"
 	exit 1
 }
 
@@ -41,6 +42,10 @@ list() {
 
 case "$1" in
 get)
+	if [ -z "$2" ]; then
+		usage
+	fi
+
 	if [ -z "$fingerprint" ]; then
 		stderr 'Environment variable PGPFINGERPRINT is not defined.'
 		exit 1
