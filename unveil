@@ -7,6 +7,7 @@ programname="unveil"
 uflag=0
 pflag=0
 oflag=0
+eflag=0
 secret=""
 
 creset='\033[0m'
@@ -35,6 +36,7 @@ list() {
 		hasu=0
 		hasp=0
 		haso=0
+		hase=0
 
 		if [ ! -d "$f" ]; then
 			continue
@@ -57,11 +59,17 @@ list() {
 			haso=1
 		fi
 
+		if [ -f "$f/extra.enc" ]; then
+			flags="${flags}e"
+			hase=1
+		fi
+
 		flags="${flags})"
 
 		if [ $hasu -eq 0 ] \
 		&& [ $hasp -eq 0 ] \
-		&& [ $haso -eq 0 ]; then
+		&& [ $haso -eq 0 ] \
+		&& [ $hase -eq 0 ]; then
 			continue
 		fi
 
@@ -76,11 +84,12 @@ stderr() {
 
 # Dies printing usage.
 usage() {
-	stderr "Usage: $programname [-u secret | -p secret | -o secret]"
+	stderr $(printf "Usage: $programname [-u secret | -p secret | -o " \
+	      && printf "secret | -e secret]")
 	exit 1
 }
 
-while getopts "u:p:o:" o; do
+while getopts "u:p:o:e:" o; do
 	case $o in
 	u)
 		uflag=1
@@ -94,6 +103,10 @@ while getopts "u:p:o:" o; do
 		oflag=1
 		secret="$OPTARG"
 		;;
+	e)
+		eflag=1
+		secret="$OPTARG"
+		;;
 	*)
 		usage
 	esac
@@ -102,11 +115,7 @@ done
 shift $((OPTIND - 1))
 
 # Only allow one of -u, -p and -o.
-if   [ $uflag -eq 1 ] && [ $pflag -eq 1 ]; then
-	usage
-elif [ $uflag -eq 1 ] && [ $oflag -eq 1 ]; then
-	usage
-elif [ $pflag -eq 1 ] && [ $oflag -eq 1 ]; then
+if [ $(($uflag + $pflag + $oflag + $eflag)) -gt 1 ]; then
 	usage
 fi
 
@@ -121,6 +130,8 @@ elif [ $pflag -eq 1 ]; then
 	decrypt "$secret/password.enc"
 elif [ $oflag -eq 1 ]; then
 	decrypt "$secret/otp.enc"
+elif [ $eflag -eq 1 ]; then
+	decrypt "$secret/extra.enc"
 else
 	list
 fi
