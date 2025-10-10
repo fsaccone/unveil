@@ -84,8 +84,7 @@ stderr() {
 
 # Dies printing usage.
 usage() {
-	stderr $(printf "Usage: $programname [-u secret | -p secret | -o " \
-	      && printf "secret | -e secret]")
+	stderr "Usage: $programname [-u secret | -p secret | -o secret | -e secret]"
 	exit 1
 }
 
